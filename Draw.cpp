@@ -1724,7 +1724,7 @@ void Renderer::DrawHUD()
 {
 	constexpr uint8_t barWidth = 40;
 
-    DrawSprite(statusBarData, (DISPLAY_WIDTH-110)>>1, DISPLAY_HEIGHT - 11);
+    DrawSprite(statusBarData, 0, DISPLAY_HEIGHT - 11);
 
     Font::PrintInt(Game::player.hp, (DISPLAY_HEIGHT/8)-1, 24, COLOUR_WHITE);
     Font::PrintInt(Game::player.mana, (DISPLAY_HEIGHT/8)-1, 59, COLOUR_WHITE);
