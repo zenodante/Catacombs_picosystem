@@ -1,11 +1,26 @@
 cmake_minimum_required(VERSION 3.12)
 
 # Set your project name here
-set(PROJECT_NAME my_project)
+set(PROJECT_NAME Catacombs)
 
 # Set your project sources here
 set(PROJECT_SOURCES
-    main.cpp
+    catacombs
+    catacombs.cpp
+    Draw.cpp
+    Enemy.cpp
+    Entity.cpp
+    FixedMath.cpp
+    Font.cpp
+    Game.cpp
+    Map.cpp
+    MapGenerator.cpp
+    Menu.cpp
+    Particle.cpp
+    Player.cpp
+    Projectile.cpp
+    Sounds.cpp
+    Strings.cpp
 )
 
 # --- Here Be Boilerplate ---
@@ -40,6 +55,6 @@ picosystem_executable(
 # Set your build options here
 pixel_double(${PROJECT_NAME})          # 120x120 resolution game, pixel-doubled to 240x240
 disable_startup_logo(${PROJECT_NAME})  # Skip the PicoSystem splash
-#no_font(${PROJECT_NAME})              # Omit the default font
-#no_spritesheet(${PROJECT_NAME})       # Omit the default spritesheet
+no_font(${PROJECT_NAME})              # Omit the default font
+no_spritesheet(${PROJECT_NAME})       # Omit the default spritesheet
 #no_overclock(${PROJECT_NAME})         # Don't overclock
