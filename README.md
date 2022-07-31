@@ -4,6 +4,6 @@
 Added sound volume setting at title page
 Optimized the 120*120 ARGB4444 display mode on Picosystem
 
-The port by-passed the default audio callback function and add new simple one to porcess the tones sequence.
+I hacked the default audio callback function and add a new simple callback to porcess the tones sequence.
 
 
