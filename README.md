@@ -3,6 +3,7 @@
 
 Added sound volume setting at title page
 Optimized the 120*120 ARGB4444 display mode on Picosystem
-you would need the hack verson picosystem sdk to complie the code (play simple tones sequence function added)
-(my sound hack version: https://github.com/zenodante/picosystem )
+
+The port by-passed the default audio callback function and add new simple one to porcess the tones sequence.
+
 

@@ -10,8 +10,12 @@ uint32_t tempBuff[120*120/4]={};
 color_t lut[256]={};
 uint32_t gameVolume = 100;
 //unsigned long lastTimingSample;
+namespace picosystem {
+    extern struct repeating_timer _audio_update_timer;
+    extern uint32_t _volume;
+}
 void L8ToRGBA(uint32_t *source,color_t *fb, color_t *lut);
-
+void playSimpleTones(uint16_t *seq, uint32_t v);
 void L8ToRGBA(uint32_t *source,color_t *fb, color_t *lut, uint32_t c){
     c = c >>2;
     while(c--){
@@ -69,7 +73,7 @@ uint8_t* Platform::GetScreenBuffer()
 void Platform::PlaySound(const uint16_t* audioPattern)
 {
 
-    play_simple_tones((uint16_t *)audioPattern, gameVolume);
+    playSimpleTones((uint16_t *)audioPattern, gameVolume);
 }
 
 uint32_t Platform::GetVolume(){
@@ -176,10 +180,53 @@ void Platform::SetPalette(const uint16_t* palette)
         lut[i] = palette[i];
     }
 }
+#ifndef TONES_END 
+#define TONES_END 0x8000
+#endif
+uint16_t *_current_simple_tone_step;
+int32_t  _current_simple_tone_ms_left=-1;
+void update_audio() {
+    // pitch bend
+    if (_current_simple_tone_ms_left==-1){
+        _play_note(10,0);//stop
+        return;
+    }
+      if (_current_simple_tone_ms_left > 0){
+        _current_simple_tone_ms_left --; //not finish current step yet
+        return;
+      }else{
+        uint32_t freq = *_current_simple_tone_step++; //load step
+        if (freq == TONES_END){
+          _current_simple_tone_ms_left=-1; //stop statement
+          _play_note(10,0);//stop
+          return;
+        }else{
+          _current_simple_tone_ms_left = (*_current_simple_tone_step++)-1;
+          _play_note(freq,_volume);//play the tone
+          return;
+        }
+      }
+    
+    
+  }
 //#include "hardware/structs/systick.h"
+bool audioCallback(struct repeating_timer *t) {
+    update_audio();
+    return true;
+}
 
+void playSimpleTones(uint16_t *seq, uint32_t v){
+    _volume = v;
+    _current_simple_tone_step = seq;
+    _current_simple_tone_ms_left = 0;
+
+}
 void init() {
-    //lastTimingSample = time();
+    //by pass the default SDK audio update function
+    cancel_repeating_timer(&_audio_update_timer);
+    //add new 1ms callback to process tones
+    add_repeating_timer_ms(-1, audioCallback, NULL, &_audio_update_timer);
+
     Game::Init();
     const bool visualiseLighting = false;
     
