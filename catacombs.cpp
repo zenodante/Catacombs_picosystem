@@ -12,7 +12,7 @@ uint32_t gameVolume = 100;
 //unsigned long lastTimingSample;
 namespace picosystem {
     extern struct repeating_timer _audio_update_timer;
-    extern uint32_t _volume;
+    //extern uint32_t _volume;
 }
 void L8ToRGBA(uint32_t *source,color_t *fb, color_t *lut);
 void playSimpleTones(uint16_t *seq, uint32_t v);
@@ -202,7 +202,7 @@ void update_audio() {
           return;
         }else{
           _current_simple_tone_ms_left = (*_current_simple_tone_step++)-1;
-          _play_note(freq,_volume);//play the tone
+          _play_note(freq,gameVolume);//play the tone
           return;
         }
       }
@@ -216,17 +216,20 @@ bool audioCallback(struct repeating_timer *t) {
 }
 
 void playSimpleTones(uint16_t *seq, uint32_t v){
-    _volume = v;
+    //_volume = v;
+    gameVolume = v;
     _current_simple_tone_step = seq;
     _current_simple_tone_ms_left = 0;
 
 }
 void init() {
-    //by pass the default SDK audio update function
+    //lastTimingSample = time();
+    //_volume=20;
     cancel_repeating_timer(&_audio_update_timer);
-    //add new 1ms callback to process tones
+    //reset a new 1ms repeat time function
+    //struct repeating_timer _audio_update_timer_new;
     add_repeating_timer_ms(-1, audioCallback, NULL, &_audio_update_timer);
-
+    //_play_note(10,0);//play the tone
     Game::Init();
     const bool visualiseLighting = false;
     
